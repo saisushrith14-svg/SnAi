@@ -1,13 +1,20 @@
 import sys
-from collections import Counter
+
+
 filename = sys.argv[1]
 field = int(sys.argv[2])
 keyword = sys.argv[3]
+
+
 with open(filename) as f:
     lines = f.readlines()
 print("Total lines:", len(lines))
+
+
 skipped=0
-counts = Counter()
+counts = {}
+
+
 for line in lines:
     if not line.strip():
         skipped += 1 
@@ -19,10 +26,21 @@ for line in lines:
                 skipped += 1
                 continue
         key = fields[field]
-        counts[key] += 1
+        if key in counts:
+            counts[key] += 1
+        else:
+             counts[key] = 1 
         
 print("Top 5:")
-for item, n in counts.most_common(5):
-    print(item, n)
+
+
+ranked = sorted(
+    counts.items(),
+    key=lambda item: item[1],
+    reverse=True
+)
+for i in range(min(len(ranked),5)):
+     print(ranked[i])
+
 
 print("Lines Skipped: ", skipped)
